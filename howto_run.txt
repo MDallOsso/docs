@@ -1,0 +1,44 @@
+COMMANDS SEQUENCE TO EXECUTE ANALYSIS FLOW (skeleton):
+======================================================
+
+ALPHA:
+0. python batch/submitLSFjobs.py -c python/HHAnalyzer.py -l HH -o /lustre/cmswork/hh/alpha_ntuples/v1_2017...
+
+ALP_ANALYSIS:
+1. Baseline Selection -> default tree + Hemisphere tree produced:
+ python scripts/BaselineSelector.py -s data_ichep -t -o def_cmva
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jesUp
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jesDown
+
+2. Read Hemisphere and create mixed samples:
+ python scripts/MixingSelector.py -s data_ichep -i def_cmva
+
+3. Baseline Selection on mixed data (better to process each file separately):
+ python scripts/BaselineSelector.py -s data_ichep -o def_cmva_mixed -i def_cmva -m
+
+4. Merge DATA and mixed DATA files (for simplicity):
+ cd /lustre/cmswork/hh/alp_baseSelector/def_cmva/
+ rm BTagCSVRun2016.root
+ hadd BTagCSVRun2016.root BTagCSVRun2016*-v*.root
+ cd /lustre/cmswork/hh/alp_baseSelector/def_cmva_mixed/
+ rm BTagCSVRun2016.root
+ hadd BTagCSVRun2016.root BTagCSVRun2016*-v*.root
+
+hh2bbbb_limit:
+5. Create symb link in a working folder (define folder names inside script):
+ ./scripts/prepare_area.sh
+
+6. Create h5 file with samples and variables needed:
+ python scripts/create_h5.py -i 20170110/
+
+7. Train mva:
+ ...
+
+8. Apply mva and create datacard and hist for combine:
+ python scripts/create_card.py -i 20170110 -o 20170110 --oname test1701_All50_p9_sc_min0 -c 0.9 -f 50
+
+combine:
+9. execute combine from CMSSW_7_4_7/src:
+ combine -d  ../../CMSSW_8_0_12/src/Analysis/hh2bbbb_limit/20170110/datacard_test1701_All50_p9_sc_min0.txt  -M Asymptotic --run blind
+
