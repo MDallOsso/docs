@@ -33,12 +33,36 @@ hh2bbbb_limit:
  python scripts/create_h5.py -i 20170110/
 
 7. Train mva:
- ...
+ python scripts/train_classifier.py (otpions hard coded in the script)
 
 8. Apply mva and create datacard and hist for combine:
- python scripts/create_card.py -i 20170110 -o 20170110 --oname test1701_All50_p9_sc_min0 -c 0.9 -f 50
+ python scripts/create_card.py -j /lustre/cmswork/hh/alp_mva/20170116-133218.json -o 20170117 --oname test -c 0.78
 
 combine:
 9. execute combine from CMSSW_7_4_7/src:
  combine -d  ../../CMSSW_8_0_12/src/Analysis/hh2bbbb_limit/20170110/datacard_test1701_All50_p9_sc_min0.txt  -M Asymptotic --run blind
+
+Additional tool for limit:
+- to scan bdt cut:
+ ./scripts/run_cards.sh 
+ (from combine area) ../../CMSSW_8_0_12/src/Analysis/hh2bbbb_limit/scripts/run_limits.sh
+ ./scripts/read_log.sh
+- to get mva roc curve and feature rank + histograms:
+ python scripts/classifier_report.py
+
+
+TO GET PLOTS
+alp_plots:
+0. to get plots before BDT from baseline selection output:
+  python scripts/drawcomp_preBDT.py
+1. to get plots after BDT from classifier_report output:
+  python scripts/drawcomp_afterBDT.py
+
+#################################################
+
+
+
+
+
+
 
