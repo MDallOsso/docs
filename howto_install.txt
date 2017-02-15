@@ -1,17 +1,18 @@
 # HOW TO GET ANALYSIS CODE FOR CMS-HH-PD
 
-# VERSION - ICHEP 2016
-# CMSSW_8_0_12
+# VERSION - MORIOND 2017
+# CMSSW_8_0_25
 # slc6_amd64_gcc530
 
 # 0.
 # CMS ENV:
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_12
-cd CMSSW_8_0_12/src
+cmsrel CMSSW_8_0_25
+cd CMSSW_8_0_25/src
 cmsenv
 mkdir Analysis
 cd Analysis
+cd ../
 
 # 1. 
 # CODE FOR NTUPLES PRODUCTION/ CLASS DEFINITION

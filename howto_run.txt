@@ -3,60 +3,61 @@ COMMANDS SEQUENCE TO EXECUTE ANALYSIS FLOW (skeleton):
 
 ALPHA:
 0. python batch/submitLSFjobs.py -c python/HHAnalyzer.py -l HH -o /lustre/cmswork/hh/alpha_ntuples/v1_2017...
+0b. cmsRun python/HHanalyzer.py
 
 ALP_ANALYSIS:
 1. Baseline Selection -> default tree + Hemisphere tree produced:
- python scripts/BaselineSelector.py -s data_ichep -t -o def_cmva
+ python scripts/BaselineSelector.py -s data_moriond -t -o def_cmva
  python scripts/BaselineSelector.py -s signals -t -o def_cmva
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jesUp
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jesDown
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 0
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 1
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 2
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 3
 
-2. Read Hemisphere and create mixed samples:
- python scripts/MixingSelector.py -s data_ichep -i def_cmva
-
-3. Baseline Selection on mixed data (better to process each file separately):
- python scripts/BaselineSelector.py -s data_ichep -o def_cmva_mixed -i def_cmva -m
-
-4. Merge DATA and mixed DATA files (for simplicity):
- cd /lustre/cmswork/hh/alp_baseSelector/def_cmva/
+2. Merge data file to get larger hem library:
+ cd /lustre/cmswork/hh/alp_moriond_base/def_cmva/
  rm BTagCSVRun2016.root
  hadd BTagCSVRun2016.root BTagCSVRun2016*-v*.root
- cd /lustre/cmswork/hh/alp_baseSelector/def_cmva_mixed/
- rm BTagCSVRun2016.root
- hadd BTagCSVRun2016.root BTagCSVRun2016*-v*.root
+ cd -
+ 
+3. Create mixed data looking at merged data sample:
+ python scripts/MixingSelector.py -s data -i def_cmva
+
+4. Baseline Selection on mixed data:
+ python scripts/BaselineSelector.py -s data -o def_cmva_mixed -i def_cmva -m
 
 hh2bbbb_limit:
 5. Create symb link in a working folder (define folder names inside script):
  ./scripts/prepare_area.sh
 
 6. Create h5 file with samples and variables needed:
- python scripts/create_h5.py -i 20170110/
+ python scripts/create_h5.py -i foldername/
 
 7. Train mva:
- python scripts/train_classifier.py (otpions hard coded in the script)
+ python scripts/train_classifier.py -i foldername -o foldername
 
-8. Apply mva and create datacard and hist for combine:
- python scripts/create_card.py -j /lustre/cmswork/hh/alp_mva/20170116-133218.json -o 20170117 --oname test -c 0.78
+8. Check classifier:
+ python scripts/classifier_report.py -j jsonpath -c sr_cut
+
+8. Create datacard and hist for combine:
+ python scripts/create_card.py -j jsonpath -o foldername --oname test -c 0.78
 
 combine:
 9. execute combine from CMSSW_7_4_7/src:
- combine -d  ../../CMSSW_8_0_12/src/Analysis/hh2bbbb_limit/20170110/datacard_test1701_All50_p9_sc_min0.txt  -M Asymptotic --run blind
+ combine -d  ../../CMSSW_8_0_25/src/Analysis/hh2bbbb_limit/datacardname  -M Asymptotic --run blind
 
 Additional tool for limit:
 - to scan bdt cut:
  ./scripts/run_cards.sh 
- (from combine area) ../../CMSSW_8_0_12/src/Analysis/hh2bbbb_limit/scripts/run_limits.sh
+ (from combine area) ../../CMSSW_8_0_25/src/Analysis/hh2bbbb_limit/scripts/run_limits.sh
  ./scripts/read_log.sh
-- to get mva roc curve and feature rank + histograms:
- python scripts/classifier_report.py
-
 
 TO GET PLOTS
 alp_plots:
 0. to get plots before BDT from baseline selection output:
-  python scripts/drawcomp_preBDT.py
+  python scripts/drawcomp_preBDT.py -c -n -o outfolder -w 0
 1. to get plots after BDT from classifier_report output:
-  python scripts/drawcomp_afterBDT.py
+  python scripts/drawcomp_afterBDT.py -c -n -o outfolder -w 0 -b bdtname
 
 #################################################
 
