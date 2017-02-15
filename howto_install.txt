@@ -14,6 +14,11 @@ mkdir Analysis
 cd Analysis
 cd ../
 
+
+# NOTE: if you plan to edit the code it is worth to create a fork and to clone that in your local area
+#       to fork, open repo with browser and click on fork button
+#       then clone from your repository (i.e. substitute 'cms-hh-pd' with your user name)
+
 # 1. 
 # CODE FOR NTUPLES PRODUCTION/ CLASS DEFINITION
 # ALPHA - follow instructions in readme
