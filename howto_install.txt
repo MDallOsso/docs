@@ -15,9 +15,14 @@ cd Analysis
 cd ../
 
 
-# NOTE: if you plan to edit the code it is worth to create a fork and to clone that in your local area
+# NOTES: 
+#       - if you plan to edit the code it is worth to create a fork and to clone that in your local area
 #       to fork, open repo with browser and click on fork button
 #       then clone from your repository (i.e. substitute 'cms-hh-pd' with your user name)
+#       - before doing 'git cms-init', fork the cmssw repo. reply 'N' to the question that follows the command.
+#       - it is possible to use alp dictionary without installing all ALPHA repository. 
+#         download 'interface/alp_object' from alpha and save to 'src' in alp_analysis
+#         include that file in the Event.h
 
 # 1. 
 # CODE FOR NTUPLES PRODUCTION/ CLASS DEFINITION
