@@ -1,4 +1,4 @@
-COMMANDS SEQUENCE TO EXECUTE ANALYSIS FLOW (skeleton):
+COMMAND SEQUENCE TO EXECUTE ANALYSIS FLOW (skeleton):
 ======================================================
 
 ALPHA:
@@ -7,24 +7,27 @@ ALPHA:
 
 ALP_ANALYSIS:
 1. Baseline Selection -> default tree + Hemisphere tree produced:
- python scripts/BaselineSelector.py -s data_moriond -t -o def_cmva
- python scripts/BaselineSelector.py -s signals -t -o def_cmva
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 0
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 1
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 2
- python scripts/BaselineSelector.py -s signals -t -o def_cmva --jetCorr 3
+ python scripts/BaselineSelector.py -s data_moriond -o def_cmva -i v2_20170222
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606 --jetCorr 0
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606 --jetCorr 1
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606 --jetCorr 2
+ python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606 --jetCorr 3
 
-2. Merge data file to get larger hem library:
+2. Merge data and signal files:
  cd /lustre/cmswork/hh/alp_moriond_base/def_cmva/
  rm BTagCSVRun2016.root
  hadd BTagCSVRun2016.root BTagCSVRun2016*-v*.root
- cd -
+
+ rm HHTo4B_pangea.root
+ hadd HHTo4B_pangea.root HHTo4B_*.root
+ ** the same in the jetCorr folders.
  
 3. Create mixed data looking at merged data sample:
- python scripts/MixingSelector.py -s data -i def_cmva
+ python scripts/MixingSelector.py -s Data -i def_cmva --comb appl
 
 4. Baseline Selection on mixed data:
- python scripts/BaselineSelector.py -s data -o def_cmva_mixed -i def_cmva -m
+ python scripts/BaselineSelector.py -s Data -o def_cmva_mixed -i def_cmva/mixed_ntuples -m
 
 hh2bbbb_limit:
 5. Create symb link in a working folder (define folder names inside script):
