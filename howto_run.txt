@@ -2,10 +2,12 @@ COMMAND SEQUENCE TO EXECUTE ANALYSIS FLOW (skeleton):
 ======================================================
 
 ALPHA:
+--------------
 0. python batch/submitLSFjobs.py -c python/HHAnalyzer.py -l HH -o /lustre/cmswork/hh/alpha_ntuples/v1_2017...
 0b. cmsRun python/HHanalyzer.py
 
 ALP_ANALYSIS:
+--------------
 1. Baseline Selection -> default tree + Hemisphere tree produced:
  python scripts/BaselineSelector.py -s data_moriond -o def_cmva -i v2_20170222
  python scripts/BaselineSelector.py -s signals -t -o def_cmva -i v2_20170606
@@ -28,26 +30,34 @@ ALP_ANALYSIS:
 
 4. Baseline Selection on mixed data:
  python scripts/BaselineSelector.py -s Data -o def_cmva_mixed -i def_cmva/mixed_ntuples -m
+(detailed instruction for all the script from readme:
+https://github.com/cms-hh-pd/alp_analysis)
 
 hh2bbbb_limit:
+--------------
 5. Create symb link in a working folder (define folder names inside script):
  ./scripts/prepare_area.sh
 
 6. Create h5 file with samples and variables needed:
- python scripts/create_h5.py -i foldername/
+ python scripts/create_h5_chunked.py -i h5foldername/ -s sample(wildcard) (-j --ew)
 
 7. Train mva:
- python scripts/train_classifier.py -i foldername -o foldername
+ python scripts/train_classifier.py -i h5foldername -o foldername
 
-8. Check classifier:
- python scripts/classifier_report.py -j jsonpath -c sr_cut
+8. Get classifier report:
+ python scripts/classifier_report.py -j jsonpath (-a additionalSample --ext extraPlots)
 
 8. Create datacard and hist for combine:
- python scripts/create_card.py -j jsonpath -o foldername --oname test -c 0.78
+ python scripts/create_card.py -j jsonpath -o foldername --oname cardname 
 
 combine:
+--------------
 9. execute combine from CMSSW_7_4_7/src:
- combine -d  ../../CMSSW_8_0_25/src/Analysis/hh2bbbb_limit/datacardname  -M Asymptotic --run blind
+ combine -d  datacardpath  -M Asymptotic --run blind --rMax 10000000 --minRelVa..
+ combine -M MaxLikelihood....
+ see also:
+ - https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/HiggsPAGPreapprovalChecks
+ - https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/SWGuideNonStandardCombineUses#Nuisance_parameter_impacts
 
 Additional tool for limit:
 - to scan bdt cut:
@@ -55,18 +65,14 @@ Additional tool for limit:
  (from combine area) ../../CMSSW_8_0_25/src/Analysis/hh2bbbb_limit/scripts/run_limits.sh
  ./scripts/read_log.sh
 
-TO GET PLOTS
+## TO GET PLOTS
 alp_plots:
+--------------
 0. to get plots before BDT from baseline selection output:
-  python scripts/drawcomp_preBDT.py -c -n -o outfolder -w 0
+  python scripts/drawcomp_preBDT.py -o outfolder -w 0
 1. to get plots after BDT from classifier_report output:
-  python scripts/drawcomp_afterBDT.py -c -n -o outfolder -w 0 -b bdtname
+  python scripts/drawcomp_afterBDT.py -n -o outfolder -w 0 -b bdtname
+detailed instructions for plots in the readme:
+https://github.com/cms-hh-pd/alp_plots
 
-#################################################
-
-
-
-
-
-
-
+======================================================
