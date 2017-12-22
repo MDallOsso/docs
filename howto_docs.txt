@@ -1,0 +1,32 @@
+COMMANDS TO UPDATE DOCUMENTATION:
+======================================================
+
+## AN -- PAS
+
+- to get repo:
+----------------
+svn co -N svn+ssh://YOURCERNID@svn.cern.ch/reps/tdr2 YOURDIR
+cd YOURDIR/
+svn update utils
+svn update -N notes
+svn update notes/AN-xxxxx
+
+- to compile:
+----------------
+cd notes
+eval `./tdr runtime -sh`
+cd AN-xxxxx
+tdr --style an b AN-xxxxx
+(tdr --style PAS b xxxxxxx)
+
+- to update official repo:
+----------------
+AN:
+download the PDF
+
+PAS:
+
+## CARDS IN SVN 
+
+
+
